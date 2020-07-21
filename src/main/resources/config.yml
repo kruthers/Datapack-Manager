@@ -17,6 +17,7 @@ date_format: "yyyy/MM/dd HH:mm:ss"
 github:
   login_method: none
   url: ssh://example.com/repo.git
+  branch: master
   auto_pull: false
   pull_on_start: false
 authentication:

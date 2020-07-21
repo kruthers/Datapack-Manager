@@ -99,6 +99,7 @@ public class CoreCommand implements CommandExecutor {
                 try {
                     CloneCommand cloneCommand = new CloneCommand()
                             .setDirectory(datapackFolder)
+                            .setBranch(config.getString("github.branch"))
                             .setURI(config.getString("github.url"));
 
                     String auth_method=config.getString("github.login_method");
