@@ -1,0 +1,31 @@
+name: ${project.name}
+version: ${project.version}
+main: com.kruthers.datapackmanager.DatapackManager
+api-version: 1.16
+author: kruthers
+description: ${project.description}
+permissions:
+  datapackmanager.reload:
+    description: Used to reload the plugin
+    default: op
+  datapackmanager.core:
+    description: Access to the default command
+    default: true
+  datapackmanager.git:
+    description: Get basic pull access to the git datapacks
+    default: op
+  datapackmanager.git.setup:
+    description: Givs you permission to setup/reset the github repo
+    default: op
+  datapackmanager.notify:
+    description: Notifies you of when an update is happing
+    default: op
+commands:
+  datapackmanager:
+    permission: datapackmanager.core
+    description: Core command for the plugin
+    usage: /<command> <reload|version>
+  git:
+    permission: datapackmanager.git
+    description: Used to managed the datapack folder from git
+    usage: /<command> <args>

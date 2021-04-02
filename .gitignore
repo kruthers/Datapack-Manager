@@ -1,1 +1,7 @@
 /old/
+/.idea/
+/Datapack Manager.iml
+/src/test/
+/target/
+/dependency-reduced-pom.xml
+/DatapackManager.iml
