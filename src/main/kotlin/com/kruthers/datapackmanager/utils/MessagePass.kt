@@ -9,8 +9,8 @@ class MessagePass {
 }
 
 fun parse(msg:String, sender: CommandSender): String {
-    var string = msg.replace("{user}",sender.name)
-    string = string.replace("{name}",sender.name)
+    var string = msg.replace("%user%",sender.name)
+    string = string.replace("%name%",sender.name)
 
     string = parse(string)
 
@@ -18,9 +18,7 @@ fun parse(msg:String, sender: CommandSender): String {
 }
 
 fun parse(msg:String): String {
-    var string = ChatColor.translateAlternateColorCodes('$',msg)
-
-
+    var string = ChatColor.translateAlternateColorCodes('&',msg)
 
     return string;
 }

@@ -5,7 +5,6 @@ import com.kruthers.datapackmanager.commands.CoreCommand
 import com.kruthers.datapackmanager.commands.Git
 import com.kruthers.datapackmanager.commands.tabcompleters.CoreCommandTabber
 import com.kruthers.datapackmanager.commands.tabcompleters.GitCommandTabber
-import com.kruthers.datapackmanager.events.BookEvents
 import com.kruthers.datapackmanager.utils.setupRepoChecks
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
@@ -41,9 +40,6 @@ class DatapackManager : JavaPlugin() {
         server.getPluginCommand("datapackmanager")!!.tabCompleter = CoreCommandTabber()
         server.getPluginCommand("git")!!.setExecutor(Git(this))
         server.getPluginCommand("git")!!.tabCompleter = GitCommandTabber()
-
-        logger.info("Loaded commands, loading Events")
-        server.pluginManager.registerEvents(BookEvents(this),this)
 
         super.onEnable()
     }

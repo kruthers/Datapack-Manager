@@ -1,7 +1,7 @@
 package com.kruthers.datapackmanager.utils
 
 import com.kruthers.datapackmanager.DatapackManager
-import org.bukkit.Bukkit
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.IOException
@@ -55,7 +55,7 @@ fun deleteFile(path: String, pl: DatapackManager, log: Boolean) {
     }
 }
 
-fun saveData(repo: String, branch: String, email: String, password: String, auth: Boolean ,pl: DatapackManager) {
+fun saveData(repo: String, branch: String, auth: AuthType, pl: DatapackManager) {
     val dataFile: File = File("${pl.dataFolder}/data.yml")
     try {
         if (!dataFile.exists()) {
@@ -65,37 +65,18 @@ fun saveData(repo: String, branch: String, email: String, password: String, auth
         val ymlData = YamlConfiguration.loadConfiguration(dataFile)
         ymlData.set("github.repo",repo)
         ymlData.set("github.branch",branch)
-        ymlData.set("github.auth.email",email)
-        ymlData.set("github.auth.password",password)
-        ymlData.set("github.auth.enabled",auth)
+        ymlData.set("github.auth.type",auth.toString())
         ymlData.save(dataFile)
     } catch (err: IOException) {
         pl.logger.warning("Failed to save github data with error:\n${err.localizedMessage}")
     }
 }
 
-fun getAuthData(pl:DatapackManager): Array<String> {
-    val authData: Array<String> = Array(2) {i -> ""}
-
-    val dataFile: File = File("${pl.dataFolder}/data.yml")
-    if (dataFile.exists()) {
-        val ymlData = YamlConfiguration.loadConfiguration(dataFile)
-        Bukkit.broadcastMessage("Email: ${ymlData.getString("github.auth.email")} | Password: ${ymlData.getString("github.auth.password")}")
-        authData[0] = ymlData.getString("github.auth.email").toString()
-        authData[1] = ymlData.getString("github.auth.password").toString()
-    }
-
-    return authData
-
-}
-
-fun isAuthEnabled(pl: DatapackManager): Boolean {
+fun getAuthMethod(pl: DatapackManager): AuthType {
     val dataFile: File = File("${pl.dataFolder}/data.yml")
 
-    return if (dataFile.exists()) {
-        val ymlData = YamlConfiguration.loadConfiguration(dataFile)
-        ymlData.getBoolean("github.auth.enabled")
-    } else {
-        false;
-    }
+    val ymlData = YamlConfiguration.loadConfiguration(dataFile)
+    val auth: AuthType = AuthType.valueOf(ymlData.getString("github.auth.type")?: "NONE") //  as
+
+    return auth
 }

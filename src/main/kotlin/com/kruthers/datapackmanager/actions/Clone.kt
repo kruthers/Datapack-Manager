@@ -1,31 +1,20 @@
 package com.kruthers.datapackmanager.actions
 
 import com.kruthers.datapackmanager.DatapackManager
-import com.kruthers.datapackmanager.events.BookEvents
-import com.kruthers.datapackmanager.events.sendAuthBook
-import com.kruthers.datapackmanager.utils.checkForDatapackFolder
-import com.kruthers.datapackmanager.utils.deleteFile
-import com.kruthers.datapackmanager.utils.parse
-import com.kruthers.datapackmanager.utils.saveData
+import com.kruthers.datapackmanager.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BookMeta
 import org.bukkit.scheduler.BukkitRunnable
 import org.eclipse.jgit.api.CloneCommand
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.api.errors.InvalidRemoteException
-import org.eclipse.jgit.api.errors.TransportException
-import org.eclipse.jgit.lib.StoredConfig
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.io.File
 import java.lang.Exception
 import java.util.logging.Logger
 
-class Clone(private val player: Player, private val plugin: DatapackManager, val repo: String, val branch: String, val authenticate: Boolean, val storeAuth: Boolean): BukkitRunnable(), GitAction {
+class Clone(private val player: Player, private val plugin: DatapackManager, val repo: String, val branch: String, val auth: AuthType): BukkitRunnable(), GitAction {
     private val command: CloneCommand = Git.cloneRepository()
     private val folder: File = File(plugin.config.getString("datapack_world")+"/datapacks")
 
@@ -59,30 +48,19 @@ class Clone(private val player: Player, private val plugin: DatapackManager, val
                 command.call()
             } catch (e: GitAPIException) {
                 player.sendMessage("${ChatColor.RED}Failed to clone from github, and API exception occurred, check the console for more details")
-                log.warning("Failed to clone from repository with error: \n${e.localizedMessage}")
+                log.warning("Failed to complete clone, a git api exception occurred: \n${e.message}\n${e.stackTraceToString()}\"")
                 return
             } catch (e: InvalidRemoteException) {
                 player.sendMessage("${ChatColor.RED}Failed to clone from github, invalid link given, check the console for more details.")
-                log.warning("Failed to clone from repository with error: \n${e.localizedMessage}")
+                log.warning("Failed to complete clone, an invalid remove exception occurred: \n${e.message}")
                 return
             } catch (e: Exception) {
                 player.sendMessage("${ChatColor.RED}Failed to clone from github, a unknown Exception occurred, check the console for more details.")
-                log.warning("Failed to clone from repository with error: \n${e.localizedMessage}")
+                log.warning("Failed to complete clone, an unknown exception occurred: \n${e.message}\n${e.stackTraceToString()}")
                 return
             }
 
             log.info("Datapack folder successfully cloned, updating repo config")
-//            val git: Git = Git.open(folder)
-//            val repoCofig: StoredConfig = git.repository.config;
-//            if (branch == "") {
-//                repoCofig.setString("branch", "master", "merge", "refs/heads/master")
-//                repoCofig.setString("branch", "master", "remote", "origin")
-//            } else {
-//                repoCofig.setString("branch", branch, "merge", "refs/heads/$branch")
-//                repoCofig.setString("branch", branch, "remote", "origin")
-//            }
-//            repoCofig.setString("remote", "origin", "fetch", "+refs/heads/*:refs/remotes/origin/*");
-//            repoCofig.setString("remote", "origin", "url", repo);
 
             log.info("Local repo config fully set, reloading datapacks")
             player.sendMessage("${ChatColor.GREEN}Datapacks cloned. Reloading")
@@ -99,21 +77,15 @@ class Clone(private val player: Player, private val plugin: DatapackManager, val
     }
 
     override fun trigger() {
-        if (authenticate) {
-            sendAuthBook(player,this,storeAuth)
-        } else {
-            saveData(repo,branch,"","",false,plugin)
-            this.runTaskAsynchronously(plugin)
+        when (auth) {
+            AuthType.LOGIN -> this.command.setCredentialsProvider(getUsernamePasswordAuth(plugin))
+            AuthType.SSH -> this.command.setTransportConfigCallback(SshCallback(plugin))
+            AuthType.Token -> this.command.setCredentialsProvider(getTokenAuth(plugin))
         }
 
-        super.trigger()
-    }
-
-    override fun triggerWithAuth(auth: UsernamePasswordCredentialsProvider) {
-        command.setCredentialsProvider(auth)
+        saveData(repo,branch,auth,plugin)
         this.runTaskAsynchronously(plugin)
-
-        super.triggerWithAuth(auth)
+        super.trigger()
     }
 
 }

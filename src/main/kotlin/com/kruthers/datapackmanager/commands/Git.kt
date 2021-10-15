@@ -3,21 +3,16 @@ package com.kruthers.datapackmanager.commands
 import com.kruthers.datapackmanager.DatapackManager
 import com.kruthers.datapackmanager.actions.Clone
 import com.kruthers.datapackmanager.actions.Pull
-import com.kruthers.datapackmanager.utils.checkForDatapackRepo
-import org.bukkit.Bukkit
+import com.kruthers.datapackmanager.utils.AuthType
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.lib.RepositoryBuilder
-import java.io.File
-import kotlin.reflect.typeOf
 
 class Git(var plugin: DatapackManager): CommandExecutor {
     private val branchArgs:MutableSet<String> = mutableSetOf("branch","b")
-    private val authArgs:MutableSet<String> = mutableSetOf("a","af","auth","authenticate");
+    private val authArgs:MutableSet<String> = mutableSetOf("a","as","at");
 
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -51,7 +46,13 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                         return true;
                     }
                     if (args.size < 2) {
-                        sender.sendMessage("${ChatColor.RED}Invalid usage, a repository is required, /git clone <repo> <args...>")
+                        sender.sendMessage("${ChatColor.RED}Invalid usage, a repository is required, /git clone <repo> <args...>\n"+
+                                "- Valid args: \n"+
+                                " | -a Authenticate with a username and password from config.yml"+
+                                " | -as Authenticate with ssh"+
+                                " | -at Authenticate with a token"+
+                                " | -b <branch> Set a branch other then master"
+                        )
                         return true;
                     }
                     if (!sender.hasPermission("datapackmanager.git.setup")) {
@@ -62,8 +63,7 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                     val player: Player = sender as Player;
                     val repo: String = args[1]
                     var branch: String = "";
-                    var auth: Boolean = false;
-                    var storeAuth: Boolean = true;
+                    var auth: AuthType = AuthType.NONE;
 
                     var i: Int = 2;
                     while (i < args.size) {
@@ -79,9 +79,10 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                                 i++ // skip foward one
 
                             } else if (authArgs.contains(arg)) {
-                                auth = true
-                                if (arg == "af") {
-                                    storeAuth = false
+                                auth = when(arg) {
+                                    "as" -> AuthType.SSH
+                                    "at" -> AuthType.Token
+                                    else -> AuthType.LOGIN
                                 }
                             }
                         } else {
@@ -93,7 +94,7 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                         i++ //step
                     }
 
-                    val command = Clone(player, plugin, repo, branch, auth, storeAuth)
+                    val command = Clone(player, plugin, repo, branch, auth)
 
                     DatapackManager.confirmation.set(sender,command)
                     player.sendMessage("${ChatColor.GREEN}Gitclone setup for ${repo}. Run '/git confirm' to start \n"+

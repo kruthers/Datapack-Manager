@@ -1,10 +1,7 @@
 package com.kruthers.datapackmanager.actions
 
 import com.kruthers.datapackmanager.DatapackManager
-import com.kruthers.datapackmanager.events.sendAuthBook
-import com.kruthers.datapackmanager.utils.getAuthData
-import com.kruthers.datapackmanager.utils.isAuthEnabled
-import com.kruthers.datapackmanager.utils.parse
+import com.kruthers.datapackmanager.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -53,20 +50,15 @@ class Pull(private val player: Player, private val plugin: DatapackManager): Git
     }
 
     override fun trigger() {
-        val authData = getAuthData(plugin)
+        val authType: AuthType = getAuthMethod(plugin)
 
-        if (isAuthEnabled(plugin)) {
-            val authSaved = authData[0] != ""
-            if (authSaved) {
-                var auth: UsernamePasswordCredentialsProvider = UsernamePasswordCredentialsProvider(authData[0],authData[1])
-                command.setCredentialsProvider(auth)
-                this.runTaskAsynchronously(plugin)
-            } else {
-                sendAuthBook(player,this,authSaved)
-            }
-        } else {
-            this.runTaskAsynchronously(plugin)
+        when (authType) {
+            AuthType.LOGIN -> this.command.setCredentialsProvider(getUsernamePasswordAuth(plugin))
+            AuthType.SSH -> this.command.setTransportConfigCallback(SshCallback(plugin))
+            AuthType.Token -> this.command.setCredentialsProvider(getTokenAuth(plugin))
         }
+
+        this.runTaskAsynchronously(plugin)
     }
 
     override fun triggerWithAuth(auth: UsernamePasswordCredentialsProvider) {

@@ -1,13 +1,20 @@
-###################
+#-----------------#
 # Datapack Manger #
 #   by kruthers   #
-###################
+#-----------------#
 # datapack_world - the world where the datapacks folder is
-
 datapack_world: world
 brodcast_lag: false
+auth:
+  ssh:
+    password: ''
+  normal:
+    username: 'username'
+    password: 'password'
+  token:
+    token: 'token'
 messages:
   perms: '&4Sorry you dont have permission todo this.'
-  setup: '[Staff] {user} Is setting up the datapack folder.'
-  pull: '[Staff] {user} Is pulling the datapack folder from github.'
-  lag_warning: '[Warning] The datapack folder is getting updated, prepair for lag'
+  setup: '&d[Git] &6{name} Is setting up the datapack folder.'
+  pull: '&d[Git] &6{user} Is pulling the datapack folder from github.'
+  lag_warning: '&4[Warning] The datapack folder is getting updated, prepair for lag'
