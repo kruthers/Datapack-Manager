@@ -26,10 +26,6 @@ class Git(var plugin: DatapackManager): CommandExecutor {
             var action: String = args[0]
             when(action) {
                 "pull" -> {
-                    if (sender !is Player) {
-                        sender.sendMessage("${ChatColor.RED}Sorry you must be a player to run the clone command")
-                        return true;
-                    }
                     if (args.size > 1) {
                         sender.sendMessage("${ChatColor.RED}Invalid usage, a repository is required, /git pull")
                         return true;
@@ -41,10 +37,6 @@ class Git(var plugin: DatapackManager): CommandExecutor {
 
                 }
                 "clone" -> {
-                    if (sender !is Player) {
-                        sender.sendMessage("${ChatColor.RED}Sorry you must be a player to run the clone command")
-                        return true;
-                    }
                     if (args.size < 2) {
                         sender.sendMessage("${ChatColor.RED}Invalid usage, a repository is required, /git clone <repo> <args...>\n"+
                                 "- Valid args: \n"+
