@@ -27,8 +27,10 @@ class SshCallback(plugin: DatapackManager): TransportConfigCallback {
     }
 
     override fun configure(p0: Transport?) {
-        val sshTransport: SshTransport = p0 as SshTransport
-        sshTransport.sshSessionFactory = sshSessionFactory
+        if (p0 is SshTransport) {
+            val sshTransport: SshTransport = p0 as SshTransport
+            sshTransport.sshSessionFactory = sshSessionFactory
+        }
     }
 
 
