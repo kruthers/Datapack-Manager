@@ -29,7 +29,7 @@ class Pull(private val player: Player, private val plugin: DatapackManager): Git
 
             val log: Logger = plugin.logger;
             log.info("${player.name}Is updating the datapack folder")
-            player.sendMessage("${ChatColor.GREEN}Starting cloning process... Clearing datapack folder")
+//            player.sendMessage("${ChatColor.GREEN}Starting cloning process... Clearing datapack folder")
             Bukkit.broadcast(parse(""+plugin.config.get("messages.pull"),player),"datapackmanager.notify")
 
             try {
