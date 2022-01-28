@@ -4,7 +4,7 @@ import com.kruthers.datapackmanager.DatapackManager
 import com.kruthers.datapackmanager.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.entity.Player
+import org.bukkit.command.CommandSender
 import org.bukkit.scheduler.BukkitRunnable
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.PullCommand
@@ -12,10 +12,9 @@ import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.io.File
-import java.lang.Exception
 import java.util.logging.Logger
 
-class Pull(private val player: Player, private val plugin: DatapackManager): GitAction, BukkitRunnable() {
+class Pull(private val sender: CommandSender, private val plugin: DatapackManager): GitAction, BukkitRunnable() {
     private val folder: File = File(plugin.config.getString("datapack_world")+"/datapacks/.git")
 
     private val builder: FileRepositoryBuilder = FileRepositoryBuilder()
@@ -28,24 +27,24 @@ class Pull(private val player: Player, private val plugin: DatapackManager): Git
 //            repo.merge().setSquash()
 
             val log: Logger = plugin.logger;
-            log.info("${player.name}Is updating the datapack folder")
-//            player.sendMessage("${ChatColor.GREEN}Starting cloning process... Clearing datapack folder")
-            Bukkit.broadcast(parse(""+plugin.config.get("messages.pull"),player),"datapackmanager.notify")
+            log.info("${sender.name}Is updating the datapack folder")
+//            sender.sendMessage("${ChatColor.GREEN}Starting cloning process... Clearing datapack folder")
+            Bukkit.broadcast(parse(""+plugin.config.get("messages.pull"),sender),"datapackmanager.notify")
 
             try {
                 command.call()
                 log.info("Successfully updated the datapacks folder")
-                player.sendMessage("${ChatColor.GREEN}Successfully pulled datapacks, reloading...")
+                sender.sendMessage("${ChatColor.GREEN}Successfully pulled datapacks, reloading...")
                 Bukkit.getServer().reloadData()
 
             } catch (e: Exception) {
                 log.severe("Exception occurred when pulling from git:")
                 e.printStackTrace()
-                player.sendMessage("${ChatColor.RED}An exception occurred while pulling the update: ${e.localizedMessage}. Check the console for more info")
+                sender.sendMessage("${ChatColor.RED}An exception occurred while pulling the update: ${e.localizedMessage}. Check the console for more info")
             }
 
         } else {
-            player.sendMessage("${ChatColor.RED}Failed to pull update as there is no repo yet")
+            sender.sendMessage("${ChatColor.RED}Failed to pull update as there is no repo yet")
         }
     }
 

@@ -31,8 +31,7 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                         return true;
                     }
 
-                    val player: Player = sender as Player;
-                    val command = Pull(player,plugin)
+                    val command = Pull(sender,plugin)
                     command.trigger()
 
                 }
@@ -52,7 +51,6 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                         return true;
                     }
 
-                    val player: Player = sender as Player;
                     val repo: String = args[1]
                     var branch: String = "";
                     var auth: AuthType = AuthType.NONE;
@@ -86,10 +84,10 @@ class Git(var plugin: DatapackManager): CommandExecutor {
                         i++ //step
                     }
 
-                    val command = Clone(player, plugin, repo, branch, auth)
+                    val command = Clone(sender, plugin, repo, branch, auth)
 
                     DatapackManager.confirmation.set(sender,command)
-                    player.sendMessage("${ChatColor.GREEN}Gitclone setup for ${repo}. Run '/git confirm' to start \n"+
+                    sender.sendMessage("${ChatColor.GREEN}Gitclone setup for ${repo}. Run '/git confirm' to start \n"+
                             "${ChatColor.RED}Warning running this will clear your current datapack folder!")
 
 
