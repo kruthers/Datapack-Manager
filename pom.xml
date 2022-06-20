@@ -11,7 +11,7 @@
     <name>DatapackManager</name>
     <description>Datapack Github Manager</description>
     <properties>
-        <kotlin.version>1.5.30-RC</kotlin.version>
+        <kotlin.version>1.6.0-M1</kotlin.version>
     </properties>
 
     <build>
