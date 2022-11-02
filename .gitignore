@@ -1,7 +1,14 @@
-/old/
-/.idea/
-/Datapack Manager.iml
-/src/test/
-/target/
-/dependency-reduced-pom.xml
-/DatapackManager.iml
+.gradle
+**/build/
+!src/**/build/
+
+.idea/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
