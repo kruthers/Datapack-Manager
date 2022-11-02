@@ -1,59 +1,56 @@
 package com.kruthers.datapackmanager.commands
 
+import cloud.commandframework.annotations.CommandDescription
+import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.CommandPermission
 import com.kruthers.datapackmanager.DatapackManager
 import com.kruthers.datapackmanager.utils.parse
 import com.kruthers.datapackmanager.utils.setupRepoChecks
-import org.bukkit.ChatColor
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.command.CommandSender
+import java.util.*
 
-class CoreCommand(var plugin: DatapackManager) : CommandExecutor {
+class CoreCommand(private val plugin: DatapackManager, private val properties: Properties) {
 
-    companion object {
-        private var properties = DatapackManager.properties;
+    private val versionString: String = "You are running Datapack Manager version <version>"
 
-        //Standard return messages
-        private var versionString: String = String.format("You are running Datapack Manager version %s",properties.getProperty("version"))
-        private var usageString: String = String.format("%sInvalid usage given for command, correct usage: /datapackmanager <reload>",ChatColor.RED)
+    private val tags: TagResolver = TagResolver.resolver(
+        Placeholder.parsed("version", this.properties.getProperty("version"))
+    )
+
+    @CommandMethod("datapackmanager")
+    @CommandDescription("Core plugin command")
+    @CommandPermission("datapackmanager.core")
+    fun coreCommand(sender: CommandSender) {
+        sender.sendMessage(parse(this.versionString,tags))
     }
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        when (args.size) {
-            0 -> sender.sendMessage(versionString)
-            1 -> {
-                var argument: String = args[0]
-                when (argument) {
-                    "version" -> sender.sendMessage(versionString)
-                    "reload" -> {
-                        if (sender.hasPermission("datapackmanager.reload")) {
-                            plugin.logger.info(sender.name+" Is reloading the plugin")
-                            sender.sendMessage("Reloading Datapack Manager")
-                            plugin.logger.info("Reloading config...")
-                            plugin.reloadConfig();
+    @CommandMethod("datapackmanager version")
+    @CommandDescription("Get the plugin version")
+    @CommandPermission("datapackmanager.core")
+    fun versionCommand(sender: CommandSender) {
+        sender.sendMessage(parse(this.versionString,tags))
+    }
 
-                            //reset values
-                            DatapackManager.setup = false;
-                            DatapackManager.confirmation = HashMap();
+    @CommandMethod("datapackmanager reload")
+    @CommandDescription("Reload the plugins config")
+    @CommandPermission("datapackmanager.reload")
+    fun reloadCommand(sender: CommandSender) {
+        plugin.logger.info(sender.name+" Is reloading the plugin")
+        sender.sendMessage(parse("<yellow>Reloading Datapack Manager"))
+        plugin.logger.info("Reloading config...")
+        plugin.reloadConfig()
 
-                            //perform github checks again
-                            setupRepoChecks(plugin)
+        //reset values
+        DatapackManager.setup = false
+        DatapackManager.confirmation = HashMap()
 
-                            sender.sendMessage("Reloaded Datapack Manager")
-                            plugin.logger.info("Reloaded successfully")
-                        } else {
-                            sender.sendMessage(parse(plugin.config.getString("messages.perms")+"",sender))
-                        }
-                    }
-                    else -> {
-                        sender.sendMessage(usageString)
-                    }
-                }
-            }
-            else -> sender.sendMessage(usageString)
-        }
+        //perform github checks again
+        setupRepoChecks(plugin)
 
-        return true;
+        sender.sendMessage(parse("<green>Reloaded Datapack Manager"))
+        plugin.logger.info("Reloaded successfully")
     }
 
 }

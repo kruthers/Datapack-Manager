@@ -1,9 +1,9 @@
-name: ${project.name}
-version: ${project.version}
+name: $name
+version: $version
 main: com.kruthers.datapackmanager.DatapackManager
-api-version: 1.16
+api-version: 1.19
 author: kruthers
-description: ${project.description}
+description: $description
 permissions:
   datapackmanager.reload:
     description: Used to reload the plugin
@@ -20,12 +20,3 @@ permissions:
   datapackmanager.notify:
     description: Notifies you of when an update is happing
     default: op
-commands:
-  datapackmanager:
-    permission: datapackmanager.core
-    description: Core command for the plugin
-    usage: /<command> <reload|version>
-  git:
-    permission: datapackmanager.git
-    description: Used to managed the datapack folder from git
-    usage: /<command> <args>

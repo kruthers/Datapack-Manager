@@ -6,6 +6,8 @@ import com.kruthers.datapackmanager.DatapackManager
 import org.bukkit.configuration.file.FileConfiguration
 import org.eclipse.jgit.api.TransportConfigCallback
 import org.eclipse.jgit.transport.*
+import org.eclipse.jgit.transport.ssh.jsch.JschConfigSessionFactory
+import org.eclipse.jgit.transport.ssh.jsch.OpenSshConfig
 import org.eclipse.jgit.util.FS
 
 class SshCallback(plugin: DatapackManager): TransportConfigCallback {
@@ -28,7 +30,7 @@ class SshCallback(plugin: DatapackManager): TransportConfigCallback {
 
     override fun configure(p0: Transport?) {
         if (p0 is SshTransport) {
-            val sshTransport: SshTransport = p0 as SshTransport
+            val sshTransport: SshTransport = p0
             sshTransport.sshSessionFactory = sshSessionFactory
         }
     }

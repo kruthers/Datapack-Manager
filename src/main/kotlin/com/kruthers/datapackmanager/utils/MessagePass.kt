@@ -1,24 +1,24 @@
 package com.kruthers.datapackmanager.utils
 
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.command.CommandSender
 
-class MessagePass {
+val mm = MiniMessage.miniMessage()
 
-
+fun parse(msg: String, tags: TagResolver = TagResolver.empty()): Component {
+    return mm.deserialize(msg,tags)
 }
 
-fun parse(msg:String, sender: CommandSender): String {
-    var string = msg.replace("%user%",sender.name)
-    string = string.replace("%name%",sender.name)
+fun parse(msg: String, sender: CommandSender, tags: TagResolver = TagResolver.empty()): Component {
+    val placeholders: TagResolver = TagResolver.resolver(
+        tags,
+        Placeholder.parsed("user",sender.name),
+        Placeholder.parsed("name",sender.name)
+    )
 
-    string = parse(string)
-
-    return string;
+    return parse(msg,placeholders)
 }
 
-fun parse(msg:String): String {
-    var string = ChatColor.translateAlternateColorCodes('&',msg)
-
-    return string;
-}

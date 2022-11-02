@@ -4,5 +4,5 @@ enum class AuthType {
     NONE,
     LOGIN,
     SSH,
-    Token
+    TOKEN
 }
