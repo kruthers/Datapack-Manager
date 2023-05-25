@@ -2,8 +2,10 @@ package com.kruthers.datapackmanager.actions
 
 import com.kruthers.datapackmanager.DatapackManager
 import com.kruthers.datapackmanager.utils.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 import org.bukkit.scheduler.BukkitRunnable
 import org.eclipse.jgit.api.Git
@@ -53,13 +55,16 @@ class Pull(private val sender: CommandSender, private val plugin: DatapackManage
             try {
                 command.call()
                 log.info("Successfully updated the datapacks folder")
-                sender.sendMessage("${ChatColor.GREEN}Successfully pulled datapacks, reloading...")
+                sender.sendMessage(Component.text("Successfully pulled datapacks, reloading...", NamedTextColor.GREEN))
                 Bukkit.getServer().reloadData()
 
             } catch (e: Exception) {
                 log.severe("Exception occurred when pulling from git:")
                 e.printStackTrace()
-                sender.sendMessage("${ChatColor.RED}An exception occurred while pulling the update: ${e.localizedMessage}. Check the console for more info")
+                sender.sendMessage(Component.text("An exception occurred while pulling the update: ", NamedTextColor.RED)
+                    .append(Component.text(e.localizedMessage, NamedTextColor.GRAY, TextDecoration.ITALIC))
+                    .append(Component.text(". Check the console for more info", NamedTextColor.RED))
+                )
             }
 
         } else {

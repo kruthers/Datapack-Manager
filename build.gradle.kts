@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.kruthers"
-version = "2.1.0"
+version = "2.1.1"
 description = "Allows you to ingrate github support into your datapack folder in game"
 
 repositories {
@@ -14,18 +14,18 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+    shadow("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
     implementation("org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r")
     implementation("org.eclipse.jgit:org.eclipse.jgit.ssh.jsch:6.3.0.202209071007-r")
 
 
-    implementation("net.kyori","adventure-platform-bukkit","4.0.1")
+    implementation("net.kyori","adventure-platform-bukkit","4.3.0")
 
 
-    implementation("cloud.commandframework","cloud-core","1.6.2")
-    implementation("cloud.commandframework","cloud-annotations","1.6.2")
-    implementation("cloud.commandframework","cloud-paper","1.6.2")
-    implementation("cloud.commandframework","cloud-minecraft-extras","1.6.2")
+    implementation("cloud.commandframework","cloud-core","1.8.3")
+    implementation("cloud.commandframework","cloud-annotations","1.8.3")
+    implementation("cloud.commandframework","cloud-paper","1.8.3")
+    implementation("cloud.commandframework","cloud-minecraft-extras","1.8.3")
 }
 
 tasks {
@@ -33,11 +33,9 @@ tasks {
         destinationDirectory.set(file("build"))
         archiveClassifier.set("")
 
-        dependencies {
-            exclude(dependency("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT"))
+        minimize {
+            exclude(dependency("org.eclipse.jgit:org.eclipse.jgit:.*"))
         }
-
-//        minimize()
     }
     build {
         dependsOn(shadowJar)
