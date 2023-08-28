@@ -4,6 +4,8 @@ main: com.kruthers.datapackmanager.DatapackManager
 api-version: 1.19
 author: kruthers
 description: $description
+depend:
+  - PandaLib
 permissions:
   datapackmanager.reload:
     description: Used to reload the plugin

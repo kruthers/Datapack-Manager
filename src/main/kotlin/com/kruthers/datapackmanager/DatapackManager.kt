@@ -33,7 +33,7 @@ class DatapackManager: JavaPlugin() {
         this.properties.load(this.classLoader.getResourceAsStream(".properties"))
         logger.info("Loading config")
         config.options().copyDefaults(true)
-        saveConfig()
+        this.saveConfig()
 
         logger.info("Config Loaded, Checking datapacks folder for git ")
         setupRepoChecks(this)

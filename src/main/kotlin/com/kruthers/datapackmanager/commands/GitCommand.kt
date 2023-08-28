@@ -46,7 +46,7 @@ class GitCommand(pl: DatapackManager) {
         val command = Clone(sender, plugin, repo, branch, authType)
 
         DatapackManager.confirmation.set(sender,command)
-        sender.sendMessage(parse("<green>Gitclone setup for ${repo}. Run '/git confirm' to start \n</green>"+
+        sender.sendMessage(parse("<green>Git clone setup for ${repo}. Run '/git confirm' to start \n</green>"+
                 "<red>Warning running this will clear your current datapack folder!"))
 
     }
