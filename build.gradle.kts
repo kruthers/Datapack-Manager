@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.kruthers"
-version = "2.2.1"
+version = "2.3.0"
 description = "Allows you to ingrate github support into your datapack folder in game"
 
 repositories {
@@ -32,11 +32,9 @@ dependencies {
 tasks {
     shadowJar {
         archiveClassifier.set("")
-
         minimize {
-            exclude(dependency("org.eclipse.jgit:org.eclipse.jgit:.*"))
+            exclude(dependency("org.eclipse.jgit:org.eclipse.jgit.ssh.jsch:*"))
         }
-        minimize()
     }
     build {
         dependsOn(shadowJar)

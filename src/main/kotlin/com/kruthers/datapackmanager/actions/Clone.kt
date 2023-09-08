@@ -52,6 +52,10 @@ class Clone(private val sender: CommandSender, private val plugin: DatapackManag
                 sender.sendMessage(parse("<red>Failed to clone from github, invalid link given, check the console for more details."))
                 log.warning("Failed to complete clone, an invalid remove exception occurred: \n${e.message}")
                 return
+            } catch (e: NotSshRemote) {
+                sender.sendMessage(parse("<red>Failed to clone from github, invalid link: The provided git remote is not a ssh clone remote. These start with git@ not https://"))
+                log.warning("Failed to complete clone, the provided remote was no an ssh remove")
+                return
             } catch (e: Exception) {
                 sender.sendMessage(parse("<red>Failed to clone from github, a unknown Exception occurred, check the console for more details."))
                 log.warning("Failed to complete clone, an unknown exception occurred: \n${e.stackTraceToString()}")

@@ -15,7 +15,6 @@ import org.eclipse.jgit.api.ResetCommand
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.lib.SubmoduleConfig
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.io.File
 import java.util.logging.Logger
 
@@ -83,12 +82,5 @@ class Pull(private val sender: CommandSender, private val plugin: DatapackManage
         }
 
         this.runTaskAsynchronously(plugin)
-    }
-
-    override fun triggerWithAuth(auth: UsernamePasswordCredentialsProvider) {
-        command.setCredentialsProvider(auth)
-        this.runTaskAsynchronously(plugin)
-
-        super.triggerWithAuth(auth)
     }
 }

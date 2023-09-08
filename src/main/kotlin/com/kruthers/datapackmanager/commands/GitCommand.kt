@@ -8,6 +8,8 @@ import com.kruthers.datapackmanager.utils.AuthType
 import com.kruthers.datapackmanager.utils.MultipleAuthType
 import com.kruthers.datapackmanager.utils.NoActionFound
 import com.kruthers.datapackmanager.utils.parse
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 
 class GitCommand(pl: DatapackManager) {
@@ -17,8 +19,12 @@ class GitCommand(pl: DatapackManager) {
     @CommandDescription("Pull data from the github")
     @CommandPermission("datapackmanager.git")
     fun onGitPullCommand(sender: CommandSender, @Flag("force", description = "Will force from master", aliases = ["f"]) force: Boolean) {
-        val command = Pull(sender, this.plugin, force)
-        command.trigger()
+        try {
+            val command = Pull(sender, this.plugin, force)
+            command.trigger()
+        } catch (err: Exception) {
+            sender.sendMessage(Component.text("Failed to pull from github: \n${err.message}", NamedTextColor.RED))
+        }
     }
 
     @CommandMethod("git clone <repo> [branch]")
@@ -55,14 +61,16 @@ class GitCommand(pl: DatapackManager) {
     @CommandDescription("Confirm a github action")
     @CommandPermission("datapackmanager.git")
     fun onGitConfirmCommand(sender: CommandSender) {
-        if (DatapackManager.confirmation.containsKey(sender)) {
-            val action = DatapackManager.confirmation[sender]
-            action!!.trigger()
-
+        try {
+            if (DatapackManager.confirmation.containsKey(sender)) {
+                DatapackManager.confirmation[sender]!!.trigger()
+            } else {
+                throw NoActionFound()
+            }
+        } catch (err: Exception) {
+            sender.sendMessage(Component.text(err.message!!, NamedTextColor.RED))
+        } finally {
             DatapackManager.confirmation.remove(sender)
-
-        } else {
-            throw NoActionFound()
         }
     }
 }
