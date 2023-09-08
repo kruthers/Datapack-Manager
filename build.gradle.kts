@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.kruthers"
-version = "2.2.0"
+version = "2.2.1"
 description = "Allows you to ingrate github support into your datapack folder in game"
 
 repositories {
@@ -17,7 +17,7 @@ dependencies {
     compileOnly(kotlin("stdlib")) //kotlin is provided by panda lib
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
 
-    //jagit
+    //jgit
     implementation("org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r")
     implementation("org.eclipse.jgit:org.eclipse.jgit.ssh.jsch:6.3.0.202209071007-r")
 
@@ -32,9 +32,6 @@ dependencies {
 tasks {
     shadowJar {
         archiveClassifier.set("")
-
-        relocate("cloud","com.kruthers.pandalib.cloud")
-//        relocate("kotlin","com.kruthers.pandalib.kotlin")
 
         minimize {
             exclude(dependency("org.eclipse.jgit:org.eclipse.jgit:.*"))
